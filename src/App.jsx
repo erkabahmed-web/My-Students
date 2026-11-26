@@ -85,6 +85,7 @@ export default function App() {
   const [user,setUser]=useState(()=>load('currentUser',null))
   const [page,setPage]=useState('Dashboard')
   const [sidebar,setSidebar]=useState(true)
+  const [mobileOpen,setMobileOpen]=useState(false)
   const [dark,setDark]=useState(load('theme',false))
   const [students,setStudents]=useState(()=>load('students',initialStudents))
   const [attendance,setAttendance]=useState(()=>load('attendance',{}))
@@ -109,14 +110,16 @@ export default function App() {
 
   return (
     <div className={dark?'app dark':'app'}>
-      <aside className={sidebar?'sidebar':'sidebar collapsed'}>
+      <aside id="primary-navigation" className={`sidebar${sidebar?'':' collapsed'}${mobileOpen?' mobile-open':''}`}>
         <div className="brand"><div className="brand-mark"><GraduationCap size={22}/></div>{sidebar&&<div><strong>My Students</strong><small>Attendance System</small></div>}</div>
-        <nav>{visibleNav.map(([label,Icon])=><button key={label} className={page===label?'nav-item active':'nav-item'} onClick={()=>setPage(label)} title={label}><Icon size={20}/>{sidebar&&<span>{label}</span>}</button>)}</nav>
+        <button className="mobile-sidebar-close" aria-label="Close navigation" onClick={()=>setMobileOpen(false)}><X size={20}/></button>
+        <nav>{visibleNav.map(([label,Icon])=><button key={label} className={page===label?'nav-item active':'nav-item'} onClick={()=>{setPage(label);setMobileOpen(false)}} title={label}><Icon size={20}/>{sidebar&&<span>{label}</span>}</button>)}</nav>
         <button className="collapse" onClick={()=>setSidebar(!sidebar)}>{sidebar?<ChevronLeft size={18}/>:<ChevronRight size={18}/>}</button>
       </aside>
+      {mobileOpen&&<button className="mobile-backdrop" aria-label="Close navigation" onClick={()=>setMobileOpen(false)}/>}
       <main>
         <header className="topbar">
-          <button className="icon-btn mobile-menu" onClick={()=>setSidebar(!sidebar)}><Menu size={20}/></button>
+          <button type="button" className="icon-btn mobile-menu" aria-label={mobileOpen?'Close navigation':'Open navigation'} aria-expanded={mobileOpen} aria-controls="primary-navigation" onClick={()=>setMobileOpen(!mobileOpen)}><Menu size={20}/></button>
           <div className="dates"><strong>{formatEthiopian(today)}</strong><span>{formatGregorian(today)}</span></div>
           <div className="top-actions">
             <button className="icon-btn" onClick={()=>setDark(!dark)}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>
@@ -230,7 +233,7 @@ function Attendance({students,attendance,setAttendance,notify}) {
   const [search,setSearch]=useState('')
   const record=attendance[date]||{}
   const setStatus=(id,status)=>setAttendance({...attendance,[date]:{...(attendance[date]||{}),[id]:{status,note:(attendance[date]?.[id]?.note||'')}}})
-  const filtered=students.filter(s=>s.name.toLowerCase().includes(search.toLower())
+  const filtered=students.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())
   )
   const counts=Object.values(record).reduce((a,r)=>({...a,[r.status]: (a[r.status]||0)+1}),{})
   const markAll=()=>setAttendance({...attendance,[date]:Object.fromEntries(students.map(s=>[s.id,{status:'Present',note:''}]))})

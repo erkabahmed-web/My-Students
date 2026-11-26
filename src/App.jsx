@@ -10,7 +10,7 @@ import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import './App.css'
 
-const ETH_MONTHS = ['Meskerem','Tikimt','Hidar','Tahsas','Tir','Yekatit','Megabit','Miyazya','Ginbot','Sene','Hamle','Nehase','Pagume']
+const ETH_MONTHS = ['መስከረም','ጥቅምት','ኅዳር','ታኅሣሥ','ጥር','የካቲት','መጋቢት','ሚያዝያ','ግንቦት','ሰኔ','ሐምሌ','ነሐሴ','ጳጉሜ']
 
 const sampleNames = [
   ['Abel Tesfaye','Male','Grade 8'],['Betelhem Kebede','Female','Grade 8'],['Daniel Alemayehu','Male','Grade 8'],
